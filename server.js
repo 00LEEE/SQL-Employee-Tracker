@@ -221,8 +221,7 @@ function addEmployee() {
             questions();
           }
         });
-      });
-}
+      })
   
   // Adds the user selection to the employee table
   .then(function(data) {
@@ -312,4 +311,3 @@ function employeeRole() {
   }
   
   questions();
-  
