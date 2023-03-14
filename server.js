@@ -126,3 +126,38 @@ function addDepartment() {
       });
     });
 }
+
+function addJob() {
+    // Get the list of department IDs for user selection
+    const departmentChoices = departmentID();
+    
+    inquirer
+      .prompt([
+        {
+          type: "input",
+          name: "title",
+          message: "Enter the title of the new role:",
+        },
+        {
+          type: "input",
+          name: "salary",
+          message: "Enter the salary for the new role:",
+        },
+        {
+          type: "list",
+          name: "department",
+          message: "Select the department ID for the new role:",
+          choices: departmentChoices,
+        },
+      ])
+      .then((data) => {
+        const query = `INSERT INTO job (title, salary, departmentID) 
+                       VALUES ("${data.title}", "${data.salary}", "${data.department}")`;
+  
+        db.query(query, (err, res) => {
+          if (err) throw err;
+          console.log(`${res.affectedRows} role added!\n`);
+          questions();
+        });
+      });
+  }
