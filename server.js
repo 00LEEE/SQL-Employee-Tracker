@@ -178,8 +178,8 @@ async function addJob() {
     });
   }
   
-  // Prompts the user to add an Employee
-  function addEmployee() {
+// Prompts the user to add an Employee
+function addEmployee() {
     inquirer
       .prompt([
         {
@@ -222,10 +222,10 @@ async function addJob() {
           }
         });
       });
-    }
+}
   
   // Adds the user selection to the employee table
-.then(function(data) {
+  .then(function(data) {
     const query = `INSERT INTO employee (firstName, lastName, jobID, managerID) VALUES ("${data.first_name}", "${data.last_name}", "${data.job_id}", "${data.manager_id}")`;
   
     db.query(query, (err, res) => {
@@ -236,21 +236,22 @@ async function addJob() {
         questions();
       }
     });
-  });
-  
-  function employeeRole() {
-    const employeeRoles = [];
-    db.query("SELECT * FROM job", (err, res) => {
-      if (err) {
-        throw err;
-      } else {
-        for (let i = 0; i < res.length; i++) {
-          employeeRoles.push(res[i].id);
-        }
+});
+
+function employeeRole() {
+  const employeeRoles = [];
+  db.query("SELECT * FROM job", (err, res) => {
+    if (err) {
+      throw err;
+    } else {
+      for (let i = 0; i < res.length; i++) {
+        employeeRoles.push(res[i].id);
       }
-    });
-    return employeeRoles;
-  }
+    }
+  });
+  return employeeRoles;
+}
+
   
   function employeeIDList() {
     const managerRoles = [];
