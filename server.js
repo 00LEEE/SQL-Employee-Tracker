@@ -127,10 +127,8 @@ function addDepartment() {
     });
 }
 
-function addJob() {
-    // Get the list of department IDs for user selection
-    const departmentChoices = departmentID();
-    
+async function addJob() {
+    const departmentChoices = await departmentID();
     inquirer
       .prompt([
         {
@@ -161,20 +159,23 @@ function addJob() {
         });
       });
   }
+  
 
   // Queries the department table
-function departmentID() {
-    const departmentID = [];
-    db.query("SELECT * FROM department", function (err, res) {
-      if (err) {
-        throw err;
-      } else {
-        for (let i = 0; i < res.length; i++) {
-          departmentID.push(res[i].id);
+  function departmentID() {
+    return new Promise((resolve, reject) => {
+      const departmentID = [];
+      db.query("SELECT * FROM department", function (err, res) {
+        if (err) {
+          reject(err);
+        } else {
+          for (let i = 0; i < res.length; i++) {
+            departmentID.push(res[i].id);
+          }
+          resolve(departmentID);
         }
-      }
+      });
     });
-    return departmentID;
   }
   
   // Prompts the user to add an Employee
@@ -221,5 +222,93 @@ function departmentID() {
           }
         });
       });
+    }
+  
+  // Adds the user selection to the employee table
+.then(function(data) {
+    const query = `INSERT INTO employee (firstName, lastName, jobID, managerID) VALUES ("${data.first_name}", "${data.last_name}", "${data.job_id}", "${data.manager_id}")`;
+  
+    db.query(query, (err, res) => {
+      if (err) {
+        throw err;
+      } else {
+        console.table(res);
+        questions();
+      }
+    });
+  });
+  
+  function employeeRole() {
+    const employeeRoles = [];
+    db.query("SELECT * FROM job", (err, res) => {
+      if (err) {
+        throw err;
+      } else {
+        for (let i = 0; i < res.length; i++) {
+          employeeRoles.push(res[i].id);
+        }
+      }
+    });
+    return employeeRoles;
   }
+  
+  function employeeIDList() {
+    const managerRoles = [];
+    db.query("SELECT * FROM employee", (err, res) => {
+      if (err) {
+        throw err;
+      } else {
+        for (let i = 0; i < res.length; i++) {
+          managerRoles.push(res[i].id);
+        }
+      }
+    });
+    return managerRoles;
+  }
+  
+  function employeeUpdate() {
+    inquirer
+      .prompt([
+        {
+          name: "employeeID",
+          type: "list",
+          message: "Please select the employee ID you would like to update.",
+          choices: employeeIDList(),
+        },
+        {
+          name: "jobID",
+          type: "list",
+          message:
+            "Please select the role ID of the employee you would like to update.",
+          choices: employeeRoleID(),
+        },
+      ])
+      .then(function (data) {
+        const query = `UPDATE employee SET jobID = "${data.jobID}" WHERE id = "${data.employeeID}"`;
+        db.query(query, (err, res) => {
+          if (err) {
+            throw err;
+          } else {
+            console.table(res);
+            questions();
+          }
+        });
+      });
+  }
+  
+  function employeeRoleID() {
+    const employeeJobID = [];
+    db.query("SELECT * FROM job", (err, res) => {
+      if (err) {
+        throw err;
+      } else {
+        for (let i = 0; i < res.length; i++) {
+          employeeJobID.push(res[i].id);
+        }
+      }
+    });
+    return employeeJobID;
+  }
+  
+  questions();
   
