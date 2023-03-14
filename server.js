@@ -161,3 +161,65 @@ function addJob() {
         });
       });
   }
+
+  // Queries the department table
+function departmentID() {
+    const departmentID = [];
+    db.query("SELECT * FROM department", function (err, res) {
+      if (err) {
+        throw err;
+      } else {
+        for (let i = 0; i < res.length; i++) {
+          departmentID.push(res[i].id);
+        }
+      }
+    });
+    return departmentID;
+  }
+  
+  // Prompts the user to add an Employee
+  function addEmployee() {
+    inquirer
+      .prompt([
+        {
+          type: "input",
+          name: "first_name",
+          message:
+            "Please enter the first name of the employee you would like to add.",
+        },
+        {
+          type: "input",
+          name: "last_name",
+          message:
+            "Please enter the last name of the employee you would like to add.",
+        },
+        {
+          type: "list",
+          name: "job_id",
+          message:
+            "Please choose the role ID of the employee you would like to add.",
+          choices: employeeRole(),
+        },
+        {
+          type: "list",
+          name: "manager_id",
+          message:
+            "Please choose the manager ID of the employee you would like to add.",
+          choices: employeeIDList(),
+        },
+      ])
+      // Adds the user selection to the employee table
+      .then(function (data) {
+        const query = `INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES ("${data.first_name}","${data.last_name}", "${data.job_id}", "${data.manager_id}")`;
+  
+        db.query(query, (err, res) => {
+          if (err) {
+            throw err;
+          } else {
+            console.table(res);
+            questions();
+          }
+        });
+      });
+  }
+  
