@@ -1,0 +1,33 @@
+DROP DATABASE IF EXISTS employee_db;
+CREATE DATABASE employee_db;
+
+USE employee_db;
+
+CREATE TABLE department (
+  id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  departmentName VARCHAR(30) NOT NULL
+);
+
+CREATE TABLE job (
+  id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  title VARCHAR(30) NOT NULL,
+  salary DECIMAL NOT NULL,
+  departmentID INT,
+  FOREIGN KEY (departmentID)
+  REFERENCES department(id)
+  ON DELETE SET NULL
+);
+
+CREATE TABLE employee (
+  id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  firstName VARCHAR(30) NOT NULL,
+  lastName VARCHAR(30) NOT NULL,
+  jobID INT,
+  managerID INT,
+  FOREIGN KEY (jobID)
+  REFERENCES job(id)
+  ON DELETE SET NULL,
+  FOREIGN KEY (managerID)
+  REFERENCES employee(id)
+  ON DELETE SET NULL
+);
